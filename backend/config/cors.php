@@ -19,7 +19,11 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
+    'allowed_origins' => [
+        env('FRONTEND_URL', 'http://localhost:3000'),
+        env('FRONTEND_URL_ALT', 'http://localhost:5173'),
+        'http://127.0.0.1:8000'
+    ],
 
     'allowed_origins_patterns' => [],
 

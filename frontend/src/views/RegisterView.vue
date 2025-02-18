@@ -2,6 +2,8 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router';
 import SnackbarService from '@/services/SnackBarService';
+import type { UserRegistrationData } from '@/types/UserRegistrationData';
+import { register } from '@/services/AuthService';
 
 const router = useRouter();
 
@@ -9,18 +11,53 @@ const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 
+const userData = ref<UserRegistrationData>({
+  name: '',
+  email: '',
+  password: '',
+  password_confirmation: ''
+})
+
 const passwordsMatch = computed(() => {
   return password.value == confirmPassword.value;
 });
 
-const handleRegistration = () => {
+const handleRegistration = async () => {
+  // Sync ref values with userData
+  userData.value = {
+    name: 'test bruh',
+    email: email.value,
+    password: password.value,
+    password_confirmation: confirmPassword.value
+  }
 
-  if(!passwordsMatch.value) {
+  if (!passwordsMatch.value) {
     SnackbarService.error("Passwords do not Match!")
     return;
   }
 
-  console.log('Register attempt:', {email: email.value, password: password.value});
+  try {
+    await register(userData.value)
+    // 204 No Content means successful registration
+    SnackbarService.success("Registration Successful!")
+    router.push({ name: 'login' });
+  } catch (error: any) {
+    // Handle validation errors
+    if (error.response && error.response.status === 422) {
+      const errors = error.response.data.errors;
+
+      // Display first error message
+      if (errors.email) {
+        SnackbarService.error(errors.email[0]);
+      } else if (errors.password) {
+        SnackbarService.error(errors.password[0]);
+      } else {
+        SnackbarService.error("Registration Failed");
+      }
+    } else {
+      SnackbarService.error("An unexpected error occurred");
+    }
+  }
 }
 
 const goToLogin = () => {
