@@ -26,7 +26,7 @@ const passwordsMatch = computed(() => {
 const handleRegistration = async () => {
   // Sync ref values with userData
   userData.value = {
-    name: 'test bruh',
+    name: name.value,
     email: email.value,
     password: password.value,
     password_confirmation: confirmPassword.value

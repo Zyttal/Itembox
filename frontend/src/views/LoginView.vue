@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 import SnackbarService from '@/services/SnackBarService';
 import { login } from '@/services/AuthService';
+import LoadingService from '@/services/LoadingService';
 
 const router = useRouter();
 
@@ -13,11 +14,14 @@ const credentials = ref({
 
 const handleLogin = async () => {
   try {
+    LoadingService.start();
     await login(credentials.value)
-    SnackbarService.success('Login successful!')
     router.push('/dashboard')
+    SnackbarService.success('Login successful!')
   } catch (error: any) {
     SnackbarService.error(error.message || 'Login failed')
+  } finally {
+    LoadingService.stop();
   }
 }
 

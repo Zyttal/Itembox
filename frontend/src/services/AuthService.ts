@@ -54,16 +54,22 @@ export const login = async (credentials: { email: string, password: string }) =>
 
     if (response.data.token) {
       localStorage.setItem('authToken', response.data.token);
-
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-
       console.log('Token stored:', response.data.token);
+      return response.data.user;
+    } else {
+      throw new Error('Login failed: No token received')
     }
-
-    return response.data.user;
   } catch (error: any) {
     console.error('Login failed:', error);
-    throw error;
+
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Login failed')
+    } else if (error.request) {
+      throw new Error('No response received from server')
+    } else {
+      throw new Error('Error during login attempt')
+    }
   }
 };
 
