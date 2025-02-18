@@ -9,13 +9,6 @@ export const api = axios.create({
   }
 });
 
-function getCookie(name: string): string | null {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
-  return null;
-}
-
 const authToken = localStorage.getItem('authToken');
 if (authToken) {
   api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;

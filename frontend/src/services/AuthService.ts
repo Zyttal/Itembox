@@ -10,7 +10,7 @@ export const checkAuth = async () => {
       return null;
     }
 
-    const response = await api.get('/api/user', {
+    const response = await api.get('/user', {
       headers: { Authorization: `Bearer ${token}` }
     });
 
