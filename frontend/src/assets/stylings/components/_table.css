@@ -1,0 +1,64 @@
+/* Table Header Stylings */
+.table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 2px solid var(--vt-c-divider-light-1);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    padding: 0rem 0.5rem;
+}
+
+.table-header .title {
+    font-size: 2rem;
+    padding: 0.8rem;
+}
+
+/* Table Content Stylings */
+.table-container {
+    padding: 1.5rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 2px solid var(--vt-c-divider-light-1);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+}
+
+table th, table td {
+    padding: 12px 10px;
+    text-align: left;
+    border-bottom: 2px solid var(--vt-c-divider-light-1);
+    border-right: 2px solid var(--vt-c-divider-light-1);
+}
+
+table th {
+    font-weight: 600;
+}
+
+table th:last-child, table td:last-child {
+    border-right: none;
+}
+
+table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Maintain rounded corners */
+table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+}
+
+table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}

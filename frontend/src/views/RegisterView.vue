@@ -7,6 +7,7 @@ import { register } from '@/services/AuthService';
 
 const router = useRouter();
 
+const name = ref('');
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
@@ -73,18 +74,23 @@ const goToLogin = () => {
         <h1 class="heading">Register an Account</h1>
         <form @submit.prevent="handleRegistration">
           <div class="form-group">
+            <label class="form-label">Name</label>
+            <input type="name" v-model="name" placeholder="Enter your name" required class="form-input">
+          </div>
+
+          <div class="form-group">
             <label class="form-label">Email</label>
             <input type="email" v-model="email" placeholder="Enter your email" required class="form-input">
           </div>
 
           <div class="form-group">
             <label class="form-label">Password</label>
-            <input type="password" v-model="password" placeholder="********" required class="form-input">
+            <input type="password" v-model="password" placeholder="Enter your password " required class="form-input">
           </div>
 
           <div class="form-group">
             <label class="form-label">Confirm Password</label>
-            <input type="password" v-model="confirmPassword" placeholder="********" required class="form-input">
+            <input type="confirmPassword" v-model="confirmPassword" placeholder="Enter your password again" required class="form-input">
           </div>
 
           <button type="submit">Sign in</button>

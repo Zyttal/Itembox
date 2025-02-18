@@ -2,15 +2,23 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 import SnackbarService from '@/services/SnackBarService';
+import { login } from '@/services/AuthService';
 
 const router = useRouter();
 
-const email = ref('')
-const password = ref('')
+const credentials = ref({
+  email: '',
+  password: ''
+});
 
-const handleLogin = () => {
-  console.log('Login attempt:', { email: email.value, password: password.value })
-  SnackbarService.success('It worked bruh!');
+const handleLogin = async () => {
+  try {
+    await login(credentials.value)
+    SnackbarService.success('Login successful!')
+    router.push('/dashboard')
+  } catch (error: any) {
+    SnackbarService.error(error.message || 'Login failed')
+  }
 }
 
 const goToRegister = () => {
@@ -27,12 +35,12 @@ const goToRegister = () => {
         <form @submit.prevent="handleLogin">
           <div class="form-group">
             <label class="form-label">Email</label>
-            <input type="email" v-model="email" placeholder="Enter your email" required class="form-input">
+            <input type="email" v-model="credentials.email" placeholder="Enter your email" required class="form-input">
           </div>
 
           <div class="form-group">
             <label class="form-label">Password</label>
-            <input type="password" v-model="password" placeholder="********" required class="form-input">
+            <input type="password" v-model="credentials.password" placeholder="Enter your password" required class="form-input">
           </div>
 
           <button type="submit">Sign in</button>

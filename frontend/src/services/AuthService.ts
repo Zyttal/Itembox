@@ -24,3 +24,25 @@ export const register = async (userData: UserRegistrationData) => {
     }
   }
 };
+
+export const login = async (credentials: {
+  email: string,
+  password: string
+}) => {
+  await initializeApi();
+  try {
+    const response = await api.post('/login', credentials);
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      console.error('Login failed:', error.response.data);
+      throw error.response.data;
+    } else if (error.request) {
+      console.error('No response received:', error.request);
+      throw new Error('No response from server');
+    } else {
+      console.error('Error setting up request:', error.message);
+      throw error;
+    }
+  }
+}
