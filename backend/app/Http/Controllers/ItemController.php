@@ -4,9 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Gate;
 
-class ItemController extends Controller
+class ItemController extends Controller implements HasMiddleware
 {
+
+    public static function middleware()
+    {
+        return [
+            new Middleware('auth:sanctum', except: ['index', 'show'])
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -25,7 +35,7 @@ class ItemController extends Controller
             'item_description' => 'required'
         ]);
 
-        $item = Item::create($fields);
+        $item = $request->user()->items()->create($fields);
 
         return $item;
     }
@@ -43,6 +53,8 @@ class ItemController extends Controller
      */
     public function update(Request $request, Item $item)
     {
+        Gate::authorize('modify', $item);
+
         $fields = $request->validate([
             'title' => 'required|max:255',
             'item_description' => 'required'
@@ -58,6 +70,8 @@ class ItemController extends Controller
      */
     public function destroy(Item $item)
     {
+        Gate::authorize('modify', $item);
+
         $item->delete();
 
         return ['message' => 'Item was Deleted!'];

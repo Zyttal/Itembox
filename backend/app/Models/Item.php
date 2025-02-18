@@ -14,4 +14,9 @@ class Item extends Model
         'title',
         'item_description'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

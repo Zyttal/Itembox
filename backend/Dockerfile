@@ -28,6 +28,12 @@ WORKDIR /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 755 /var/www/html
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage/logs
+
+# Ensure log file exists and has correct permissions
+RUN touch /var/www/html/storage/logs/laravel.log \
+    && chown www-data:www-data /var/www/html/storage/logs/laravel.log \
+    && chmod 664 /var/www/html/storage/logs/laravel.log
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

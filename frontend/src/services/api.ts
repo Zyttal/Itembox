@@ -1,21 +1,22 @@
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/',
+  baseURL: 'http://127.0.0.1:8000/api/',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest'
   }
-})
+});
 
-export const initializeApi = async () => {
-  try {
-    await api.get('/sanctum/csrf-cookie');
-    return true;
-  } catch (error) {
-    console.error('Failed to get CSRF cookie', error);
-    return false;
-  }
-};
+function getCookie(name: string): string | null {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  return null;
+}
+
+const authToken = localStorage.getItem('authToken');
+if (authToken) {
+  api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
+}

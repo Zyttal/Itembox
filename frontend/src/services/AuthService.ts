@@ -1,9 +1,32 @@
 import type { UserRegistrationData } from "@/types/UserRegistrationData";
-import { initializeApi } from "./api";
 import { api } from "./api";
 
+export const checkAuth = async () => {
+  try {
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+      console.warn('No auth token found');
+      return null;
+    }
+
+    const response = await api.get('/api/user', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (response.status === 200) {
+      return response.data || { success: true };
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Auth check failed:', error);
+    return null;
+  }
+};
+
+
 export const register = async (userData: UserRegistrationData) => {
-  await initializeApi();
   try {
     const response = await api.post('/register', userData);
     return response.data;
@@ -25,24 +48,39 @@ export const register = async (userData: UserRegistrationData) => {
   }
 };
 
-export const login = async (credentials: {
-  email: string,
-  password: string
-}) => {
-  await initializeApi();
+export const login = async (credentials: { email: string, password: string }) => {
   try {
     const response = await api.post('/login', credentials);
-    return response.data;
-  } catch (error: any) {
-    if (error.response) {
-      console.error('Login failed:', error.response.data);
-      throw error.response.data;
-    } else if (error.request) {
-      console.error('No response received:', error.request);
-      throw new Error('No response from server');
-    } else {
-      console.error('Error setting up request:', error.message);
-      throw error;
+
+    if (response.data.token) {
+      localStorage.setItem('authToken', response.data.token);
+
+      api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+
+      console.log('Token stored:', response.data.token);
     }
+
+    return response.data.user;
+  } catch (error: any) {
+    console.error('Login failed:', error);
+    throw error;
   }
-}
+};
+
+export const logout = async () => {
+  try {
+    await api.post('/logout');
+
+    // Remove the token from localStorage
+    localStorage.removeItem('authToken');
+
+    // Remove Authorization header from axios
+    delete api.defaults.headers.common['Authorization'];
+
+    return true;
+  } catch (error: any) {
+    console.error('Logout failed:', error);
+    return false;
+  }
+};
+
