@@ -22,7 +22,7 @@ class ItemController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        return Item::all();
+        return Item::paginate(10);
     }
 
     /**
