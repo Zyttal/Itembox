@@ -9,6 +9,7 @@ const {
   loading,
   error,
   fetchItems,
+  pagination,
   handleAddItem,
   handleEditItem,
   handleDeleteItem
@@ -16,6 +17,10 @@ const {
 
 const refreshRoute = () => {
   router.go(0);
+};
+
+const handlePageChange = (page: number) => {
+  fetchItems(page);
 };
 
 onMounted(() => {
@@ -66,6 +71,40 @@ onMounted(() => {
     <div v-if="error" class="error-state">
       <p>{{ error }}</p>
       <button @click="refreshRoute">Try Again</button>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div v-if="pagination && !loading && !error" class="pagination-controls">
+      <div class="pagination-info">
+        <span>Showing items {{ pagination.from }}-{{ pagination.to }} of {{ pagination.total }}</span>
+      </div>
+      <div class="pagination-buttons">
+        <button
+          class="pagination-button"
+          :disabled="!pagination.prev_page_url"
+          @click="handlePageChange(pagination.current_page - 1)"
+        >
+          &laquo; Previous
+        </button>
+
+        <button
+          v-for="link in pagination.links.slice(1, -1)"
+          :key="link.label"
+          class="pagination-button"
+          :class="{ active: link.active }"
+          @click="handlePageChange(Number(link.label))"
+        >
+          {{ link.label }}
+        </button>
+
+        <button
+          class="pagination-button"
+          :disabled="!pagination.next_page_url"
+          @click="handlePageChange(pagination.current_page + 1)"
+        >
+          Next &raquo;
+        </button>
+      </div>
     </div>
   </div>
 </template>

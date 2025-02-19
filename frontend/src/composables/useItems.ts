@@ -8,16 +8,16 @@ export function useItems() {
   const error = ref<string | null>(null);
   const pagination = ref<Omit<PaginatedResponse<Item>, 'data'> | null>(null);
   const currentUserId = ref<number | null>(null);
+  const currentPage = ref(1);
 
-  const fetchItems = async (userId?: number) => {
+  const fetchItems = async (page?: number) => {
     try {
       loading.value = true;
-      if (userId) {
-        currentUserId.value = userId;
+      if (page) {
+        currentPage.value = page;
       }
-      const response = await getItems(currentUserId.value || undefined);
+      const response = await getItems(currentUserId.value || undefined, currentPage.value);
       items.value = response.data;
-
 
       const { data, ...paginationInfo } = response;
       pagination.value = paginationInfo;
