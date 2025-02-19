@@ -1,6 +1,8 @@
 import { ref } from 'vue';
-import type { Item, PaginatedResponse } from '@/types/items';
-import { getItems } from '@/services/ItemService';
+import type { Item, ItemCreate, PaginatedResponse } from '@/types/items';
+import { addItem, getItemDetails, getItems } from '@/services/ItemService';
+import LoadingService from '@/services/LoadingService';
+import SnackbarService from '@/services/SnackBarService';
 
 export function useItems() {
   const items = ref<Item[]>([]);
@@ -33,14 +35,35 @@ export function useItems() {
       loading.value = false;
     }
   };
-  const handleViewItem = () => {
-    // TODO: Implement view item functionality
-    console.log('View item clicked');
+
+  const handleViewItem = async (itemId: number): Promise<Item> => {
+    try {
+      LoadingService.start();
+      console.log(`Triggered with id: ${itemId}`);
+
+      const response = await getItemDetails(itemId);
+      return response;
+    } catch {
+      SnackbarService.error("Failed to get Item Details");
+      throw error;
+    } finally {
+      LoadingService.stop();
+    }
   }
 
-  const handleAddItem = () => {
-    // TODO: Implement add item functionality
-    console.log('Add item clicked');
+  const handleAddItem = async (item: ItemCreate) => {
+    try {
+      LoadingService.start();
+
+      const response = await addItem(item);
+      console.log(`${response.data}`);
+      SnackbarService.success('Added an Item!')
+      return response.data;
+    } catch {
+      SnackbarService.error('Failed to add an item!');
+    } finally {
+      LoadingService.stop();
+    }
   };
 
   const handleEditItem = (itemId: number) => {

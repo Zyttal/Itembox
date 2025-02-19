@@ -1,8 +1,15 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import DashboardHeader from '@/components/DashboardHeader.vue';
 import { useItems } from '@/composables/useItems';
 import router from '@/router';
+import { useModal } from 'vue-final-modal'
+import CreateItemModal from '@/components/modals/CreateItemModal.vue';
+import ViewItemModal from '@/components/modals/ViewItemModal.vue';
+import LoadingService from '@/services/LoadingService';
+import type { ItemCreate } from '@/types/items';
+
+const isModalVisible = ref(false);
 
 const {
   items,
@@ -12,8 +19,6 @@ const {
   pagination,
   handleViewItem,
   handleAddItem,
-  handleEditItem,
-  handleDeleteItem
 } = useItems();
 
 const refreshRoute = () => {
@@ -24,9 +29,35 @@ const handlePageChange = (page: number) => {
   fetchItems(page);
 };
 
+const showAddModal = () => {
+  isModalVisible.value = true;
+};
+
 onMounted(() => {
   fetchItems();
 });
+
+const { open: openCreateModal, close } = useModal({
+  component: CreateItemModal, attrs: {
+    onSubmit: async (item:ItemCreate) => {
+      await handleAddItem(item);
+      close();
+    }
+  }
+})
+
+const handleRowClick = (itemId: number) => {
+  const { open } = useModal({
+    component: ViewItemModal,
+    attrs: {
+      itemId,
+      onView: handleViewItem
+    }
+  });
+
+  open();
+}
+
 </script>
 
 <template>
@@ -37,7 +68,7 @@ onMounted(() => {
     <!-- Table head -->
     <div class="table-header">
       <h3 class="title">Items</h3>
-      <button @click="handleAddItem">+ Add Item</button>
+      <button @click="openCreateModal">+ Add Item</button>
     </div>
 
     <table v-if="!loading && !error">
@@ -48,7 +79,7 @@ onMounted(() => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in items" :key="item.id">
+        <tr v-for="item in items" :key="item.id" @click="handleRowClick(item.id)">
           <td>
             <div class="item-name">
               <span class="item-name">{{ item.title }}</span>
@@ -80,29 +111,18 @@ onMounted(() => {
         <span>Showing items {{ pagination.from }}-{{ pagination.to }} of {{ pagination.total }}</span>
       </div>
       <div class="pagination-buttons">
-        <button
-          class="pagination-button"
-          :disabled="!pagination.prev_page_url"
-          @click="handlePageChange(pagination.current_page - 1)"
-        >
+        <button class="pagination-button" :disabled="!pagination.prev_page_url"
+          @click="handlePageChange(pagination.current_page - 1)">
           &laquo; Previous
         </button>
 
-        <button
-          v-for="link in pagination.links.slice(1, -1)"
-          :key="link.label"
-          class="pagination-button"
-          :class="{ active: link.active }"
-          @click="handlePageChange(Number(link.label))"
-        >
+        <button v-for="link in pagination.links.slice(1, -1)" :key="link.label" class="pagination-button"
+          :class="{ active: link.active }" @click="handlePageChange(Number(link.label))">
           {{ link.label }}
         </button>
 
-        <button
-          class="pagination-button"
-          :disabled="!pagination.next_page_url"
-          @click="handlePageChange(pagination.current_page + 1)"
-        >
+        <button class="pagination-button" :disabled="!pagination.next_page_url"
+          @click="handlePageChange(pagination.current_page + 1)">
           Next &raquo;
         </button>
       </div>

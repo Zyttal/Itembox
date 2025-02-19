@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import { defineComponent } from 'vue'
+import { ModalsContainer } from 'vue-final-modal';
 
-
-defineComponent({
-  components: {
-    LoadingSpinner
-  }
-})
 </script>
 
 <template>
   <LoadingSpinner />
-  <RouterView></RouterView>
+  <RouterView />
+  <ModalsContainer />
 </template>

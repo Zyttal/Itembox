@@ -28,7 +28,7 @@ class ItemController extends Controller implements HasMiddleware
             $query->where('user_id', $request->user_id);
         }
 
-        return $query->paginate(10);
+        return $query->orderBy('created_at', 'desc')->paginate(10);
     }
 
     /**

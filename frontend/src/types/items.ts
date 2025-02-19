@@ -28,3 +28,9 @@ export interface PaginatedResponse<T> {
   to: number;
   total: number;
 }
+
+
+export interface ItemCreate {
+  title: string;
+  item_description: string;
+}

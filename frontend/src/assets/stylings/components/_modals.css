@@ -1,0 +1,21 @@
+.custom-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-modal-content {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background-color: var(--color-background-soft);
+    border-radius: 0.5rem;
+}
+
+.custom-modal-content>*+* {
+    margin: 0.5rem 0;
+}
+
+.custom-modal-content h1 {
+    font-size: 1.375rem;
+}

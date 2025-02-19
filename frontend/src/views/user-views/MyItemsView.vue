@@ -13,11 +13,7 @@ const {
   loading,
   error,
   pagination,
-  fetchItems,
-  handleViewItem,
-  handleAddItem,
-  handleEditItem,
-  handleDeleteItem
+  fetchItems
 } = useItems();
 
 onMounted(async () => {
@@ -51,7 +47,7 @@ const refreshRoute = () => {
     <!-- Table head -->
     <div class="table-header">
       <h3 class="title">Items</h3>
-      <button @click="handleAddItem">+ Add Item</button>
+      <button @click="">+ Add Item</button>
     </div>
 
     <table v-if="!loading && !error">

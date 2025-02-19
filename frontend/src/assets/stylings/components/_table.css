@@ -29,6 +29,18 @@ table {
     overflow: hidden;
 }
 
+table tbody tr {
+    transition: background-color 0.2s ease;
+    position: relative;
+    z-index: 1; 
+}
+
+table tbody tr:hover {
+    background-color: var(--color-background-soft);
+    cursor: pointer;
+    outline: 1px solid var(--vt-c-divider-light-1); 
+}
+
 table th, table td {
     padding: 12px 10px;
     text-align: left;
@@ -47,7 +59,6 @@ table th:last-child, table td:last-child {
 table tbody tr:last-child td {
     border-bottom: none;
 }
-
 
 .action-buttons {
     display: flex;
