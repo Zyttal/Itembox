@@ -16,7 +16,7 @@ const handleLogin = async () => {
   try {
     LoadingService.start();
     await login(credentials.value)
-    router.push('/dashboard')
+    router.push('/items')
     SnackbarService.success('Login successful!')
   } catch (error: any) {
     SnackbarService.error(error.message || 'Login failed')

@@ -1,5 +1,6 @@
 import type { UserRegistrationData } from "@/types/UserRegistrationData";
 import { api } from "./api";
+import type { User } from "@/types/user";
 
 export const checkAuth = async () => {
   try {
@@ -89,4 +90,14 @@ export const logout = async () => {
     return false;
   }
 };
+
+export const getUser = async (): Promise<User> => {
+  try {
+    const response = await api.get('/user');
+    return response.data;
+  } catch (error:any){
+    console.error('User retrieval failed:', error.response.data);
+    throw new Error(`Error on request: ${error.message}`);
+  }
+}
 

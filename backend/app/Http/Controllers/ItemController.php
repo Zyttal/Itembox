@@ -20,9 +20,15 @@ class ItemController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Item::paginate(10);
+        $query = Item::query();
+
+        if ($request->has('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        return $query->paginate(10);
     }
 
     /**

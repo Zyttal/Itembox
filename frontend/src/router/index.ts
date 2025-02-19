@@ -1,7 +1,9 @@
 import { checkAuth } from '@/services/AuthService'
+import LoadingService from '@/services/LoadingService'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
-import DashboardView from '@/views/user-views/DashboardView.vue'
+import ItemsView from '@/views/user-views/ItemsView.vue'
+import MyItemsView from '@/views/user-views/MyItemsView.vue'
 import ProfileView from '@/views/user-views/ProfileView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -23,9 +25,15 @@ const router = createRouter({
       component: RegisterView
     },
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: DashboardView,
+      path: '/items',
+      name: 'items',
+      component: ItemsView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/my-items',
+      name: 'my-items',
+      component: MyItemsView,
       meta: { requiresAuth: true }
     },
     {
@@ -38,6 +46,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+  LoadingService.start();
   if (to.matched.some(record => record.meta.requiresAuth)) {
     console.log('Checking auth for protected route:', to.path);
     const isAuthenticated = await checkAuthStatus();
@@ -49,8 +58,10 @@ router.beforeEach(async (to, from, next) => {
       console.log('Authenticated, proceeding to route');
       next();
     }
+    LoadingService.stop();
   } else {
     console.log('No auth required for route:', to.path);
+    LoadingService.stop();
     next();
   }
 });

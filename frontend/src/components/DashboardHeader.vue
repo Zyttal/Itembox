@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { RouterLink, useRouter } from 'vue-router';
 import { logout } from '@/services/AuthService';
+import LoadingService from '@/services/LoadingService';
 
 const router = useRouter();
 
 const handleLogout = async () => {
   try {
+    LoadingService.start();
     await logout();
-    // Redirect to login page after successful logout
     router.push('/login');
   } catch (error) {
     console.error('Logout failed:', error);
-    // You might want to show an error message to the user here
+  } finally {
+    LoadingService.stop();
   }
 };
 </script>
@@ -26,8 +28,13 @@ const handleLogout = async () => {
       <nav class="nav-links">
         <ul>
           <li>
-            <RouterLink to="/dashboard" active-class="active-route">
-              Dashboard
+            <RouterLink to="/items" active-class="active-route">
+              Items
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/my-items" active-class="active-route">
+              My Items
             </RouterLink>
           </li>
           <li>
