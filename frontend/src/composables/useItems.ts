@@ -10,12 +10,17 @@ export function useItems() {
   const currentUserId = ref<number | null>(null);
   const currentPage = ref(1);
 
-  const fetchItems = async (page?: number) => {
+  const fetchItems = async (page?: number, userId?: number) => {
     try {
       loading.value = true;
+
+      if (userId) {
+        currentUserId.value = userId;
+      }
       if (page) {
         currentPage.value = page;
       }
+
       const response = await getItems(currentUserId.value || undefined, currentPage.value);
       items.value = response.data;
 
@@ -28,7 +33,6 @@ export function useItems() {
       loading.value = false;
     }
   };
-
   const handleViewItem = () => {
     // TODO: Implement view item functionality
     console.log('View item clicked');
@@ -55,6 +59,7 @@ export function useItems() {
     error,
     pagination,
     fetchItems,
+    handleViewItem,
     handleAddItem,
     handleEditItem,
     handleDeleteItem

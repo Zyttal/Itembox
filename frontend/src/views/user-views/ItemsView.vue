@@ -10,6 +10,7 @@ const {
   error,
   fetchItems,
   pagination,
+  handleViewItem,
   handleAddItem,
   handleEditItem,
   handleDeleteItem
